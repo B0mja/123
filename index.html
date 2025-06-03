@@ -277,21 +277,25 @@
         const playersRef = database.ref('players');
         
         // Генерация ID игрока
-        const playerId = 'player_' + Math.random().toString(36).substr(2, 8);
-        let playerName = prompt("Введите ваше имя (макс. 10 символов)", "Игрок") || "Игрок";
-        playerName = playerName.substring(0, 10);
+        const playerId = localStorage.getItem('playerId') || 'player_' + Math.random().toString(36).substr(2, 8);
+        localStorage.setItem('playerId', playerId);
+        
+        // Загрузка или запрос имени игрока
+        let playerName = localStorage.getItem('playerName');
+        if (!playerName) {
+            playerName = prompt("Введите ваше имя (макс. 10 символов)", "Игрок") || "Игрок";
+            playerName = playerName.substring(0, 10);
+            localStorage.setItem('playerName', playerName);
+        }
+        
         let selectedTeam = null;
-        let playerScore = 0;
+        let playerScore = parseInt(localStorage.getItem('playerScore')) || 0;
 
         // Настройка присутствия
         function setupPresence() {
-            // Добавляем пользователя
             presenceRef.child(playerId).set(true);
-            
-            // Удаляем при отключении
             presenceRef.child(playerId).onDisconnect().remove();
             
-            // Следим за количеством
             presenceRef.on('value', (snap) => {
                 const count = snap.numChildren();
                 document.getElementById('online-count').textContent = count;
@@ -299,18 +303,16 @@
             });
         }
 
-        // Обновление счета команды
+        // Обновление счета команды и игрока
         function updateTeamScore() {
             if (!selectedTeam) return;
             
-            // Увеличиваем общий счет команды
             scoresRef.child(selectedTeam).set(firebase.database.ServerValue.increment(1));
             
-            // Увеличиваем личный счет
             playerScore++;
+            localStorage.setItem('playerScore', playerScore);
             updatePlayerScore();
             
-            // Обновляем в базе
             playersRef.child(playerId).set({
                 name: playerName,
                 score: playerScore,
@@ -319,7 +321,7 @@
             });
         }
 
-        // Обновление личного счета
+        // Обновление отображения личного счета
         function updatePlayerScore() {
             document.getElementById('player-score').textContent = playerScore;
             document.getElementById('player-score-game').textContent = playerScore;
@@ -332,12 +334,10 @@
                 const topList = document.getElementById('top-list');
                 topList.innerHTML = '';
                 
-                // Преобразуем в массив и сортируем
                 const sorted = Object.entries(players)
                     .map(([id, data]) => ({...data, id}))
                     .sort((a, b) => b.score - a.score);
                 
-                // Отображаем ТОП-10
                 sorted.slice(0, 10).forEach((player, index) => {
                     const item = document.createElement('div');
                     item.className = 'top-item';
@@ -408,9 +408,18 @@
 
         document.querySelector('.click-area').addEventListener('click', updateTeamScore);
 
-        // Инициализация
-        setupPresence();
-        loadTopPlayers();
+        // Инициализация игры
+        function initGame() {
+            setupPresence();
+            updatePlayerScore();
+            loadTopPlayers();
+            
+            // Показываем главный экран
+            document.getElementById('main-screen').style.display = 'flex';
+        }
+
+        // Запуск игры
+        window.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
