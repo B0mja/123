@@ -87,4 +87,75 @@ function updateScores() {
     document.getElementById('ua-score-game').textContent = scores.ua;
     document.getElementById('ru-score-game').textContent = scores.ru;
     document.getElementById('total-score-game').textContent = `Всего: ${total}`;
+	
+	// Модифицируем функцию selectTeam для плавного перехода
+function selectTeam(team) {
+    selectedTeam = team;
+    document.getElementById('main-screen').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('main-screen').style.display = 'none';
+        document.getElementById('game-screen').style.opacity = '0';
+        document.getElementById('game-screen').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('game-screen').style.opacity = '1';
+        }, 10);
+    }, 300);
+    
+    // Анимация фона
+    document.body.style.transition = 'background 0.5s ease';
+    if (team === 'ua') {
+        document.body.style.background = 'linear-gradient(135deg, var(--ua-blue), var(--ua-yellow))';
+    } else {
+        document.body.style.background = 'linear-gradient(135deg, var(--ru-white), var(--ru-blue), var(--ru-red))';
+    }
+    
+    // Анимация изображения
+    const image = document.getElementById(`${team}-image`);
+    image.style.display = 'block';
+    image.style.animation = 'appear 0.5s ease-out forwards, float 3s ease-in-out infinite';
+}
+
+// Модифицируем функцию backToMain для плавного перехода
+function backToMain() {
+    document.getElementById('game-screen').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('main-screen').style.opacity = '0';
+        document.getElementById('main-screen').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('main-screen').style.opacity = '1';
+        }, 10);
+    }, 300);
+    
+    // Анимация фона
+    document.body.style.transition = 'background 0.5s ease';
+    document.body.style.background = 'linear-gradient(135deg, #1a1a2e, #16213e)';
+}
+
+// Добавляем анимацию при клике на изображение
+function updateTeamScore() {
+    if (!selectedTeam) return;
+    
+    // Анимация изображения
+    const image = document.getElementById(`${selectedTeam}-image`);
+    image.style.transform = 'scale(1.1)';
+    setTimeout(() => {
+        image.style.transform = 'scale(1)';
+    }, 200);
+    
+    // Остальной код функции остается прежним
+    scoresRef.child(selectedTeam).set(firebase.database.ServerValue.increment(1));
+    
+    playerScore++;
+    localStorage.setItem('playerScore', playerScore);
+    updatePlayerScore();
+    
+    playersRef.child(playerId).set({
+        name: playerName,
+        score: playerScore,
+        team: selectedTeam,
+        lastPlayed: firebase.database.ServerValue.TIMESTAMP
+    });
+}
+	
 }
