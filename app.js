@@ -159,3 +159,49 @@ function updateTeamScore() {
 }
 	
 }
+
+	// Универсальный обработчик для всех устройств
+function setupButtonPress() {
+    const interactiveElements = document.querySelectorAll('.team-btn, .click-area, .nav-btn');
+    
+    // Обработчики для мыши
+    interactiveElements.forEach(el => {
+        el.addEventListener('mousedown', () => {
+            el.classList.add('pressed');
+        });
+        
+        el.addEventListener('mouseup', () => {
+            el.classList.remove('pressed');
+        });
+        
+        el.addEventListener('mouseleave', () => {
+            el.classList.remove('pressed');
+        });
+    });
+    
+    // Обработчики для touch-устройств
+    interactiveElements.forEach(el => {
+        el.addEventListener('touchstart', () => {
+            el.classList.add('pressed');
+            // Небольшая задержка для визуального подтверждения
+            setTimeout(() => el.classList.remove('pressed'), 300);
+        }, {passive: true});
+        
+        el.addEventListener('touchend', () => {
+            el.classList.remove('pressed');
+        }, {passive: true});
+        
+        el.addEventListener('touchcancel', () => {
+            el.classList.remove('pressed');
+        }, {passive: true});
+    });
+}
+
+// Вызовите эту функцию в конце вашего initGame()
+function initGame() {
+    setupPresence();
+    updatePlayerScore();
+    loadTopPlayers();
+    document.getElementById('main-screen').style.display = 'flex';
+    setupButtonPress(); // Добавьте эту строку
+}
