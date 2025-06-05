@@ -8,7 +8,9 @@
 	<link href="styles.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
-    
+    <style>
+        
+    </style>
 </head>
 <body>
     <!-- Главный экран -->
@@ -201,6 +203,42 @@
             document.getElementById('ru-progress-game').style.flexGrow = 1;
         });
 
+        // Настройка обработчиков нажатия
+        function setupButtonPress() {
+            const interactiveElements = document.querySelectorAll('.team-btn, .click-area, .nav-btn');
+            
+            // Обработчики для мыши
+            interactiveElements.forEach(el => {
+                el.addEventListener('mousedown', () => {
+                    el.classList.add('pressed');
+                });
+                
+                el.addEventListener('mouseup', () => {
+                    el.classList.remove('pressed');
+                });
+                
+                el.addEventListener('mouseleave', () => {
+                    el.classList.remove('pressed');
+                });
+            });
+            
+            // Обработчики для touch-устройств
+            interactiveElements.forEach(el => {
+                el.addEventListener('touchstart', () => {
+                    el.classList.add('pressed');
+                    setTimeout(() => el.classList.remove('pressed'), 300);
+                }, {passive: true});
+                
+                el.addEventListener('touchend', () => {
+                    el.classList.remove('pressed');
+                }, {passive: true});
+                
+                el.addEventListener('touchcancel', () => {
+                    el.classList.remove('pressed');
+                }, {passive: true});
+            });
+        }
+
         // Обработчики событий
         document.getElementById('ua-btn').addEventListener('click', () => {
             selectedTeam = 'ua';
@@ -247,6 +285,7 @@
             setupPresence();
             updatePlayerScore();
             loadTopPlayers();
+            setupButtonPress(); // Добавлено для обработки нажатий
             document.getElementById('main-screen').style.display = 'flex';
         }
 
