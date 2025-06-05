@@ -1,0 +1,256 @@
+        :root {
+        --ua-blue: #0057B7;
+        --ua-yellow: #FFD700;
+        --ru-white: #FFFFFF;
+        --ru-blue: #0039A6;
+        --ru-red: #D52B1E;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        overflow: hidden;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.5s ease;
+    }
+    
+    .screen {
+        display: none;
+        height: 100vh;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+        transition: opacity 0.3s ease;
+    }
+    
+    .title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-weight: 900;
+        text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    
+    .progress-container {
+        width: 95%;
+        max-width: 500px;
+        margin: 1rem 0;
+        background: rgba(255,255,255,0.1);
+        padding: 15px;
+        border-radius: 15px;
+    }
+    
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .battle-bar {
+        width: 100%;
+        height: 25px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 12px;
+        display: flex;
+        margin: 10px 0;
+    }
+    
+    .ua-progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--ua-blue), var(--ua-yellow));
+        transition: flex-grow 0.5s;
+    }
+    
+    .ru-progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--ru-white), var(--ru-blue), var(--ru-red));
+        transition: flex-grow 0.5s;
+    }
+    
+    .team-btn {
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 10px;
+        width: 180px;
+        margin: 0.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        transform: translateY(0);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    #ua-btn {
+        background: linear-gradient(135deg, var(--ua-blue), var(--ua-yellow));
+        color: white;
+    }
+    
+    #ru-btn {
+        background: linear-gradient(135deg, var(--ru-white), var(--ru-blue), var(--ru-red));
+        color: var(--ru-blue);
+    }
+    
+    .team-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    
+    .team-btn:active, .team-btn.touch-active {
+    transform: translateY(1px) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+    
+    #show-top-btn {
+        background: #4CAF50;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .click-area {
+        width: 200px;
+        height: 200px;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .click-image {
+        max-width: 100%;
+        max-height: 100%;
+        transition: all 0.3s ease;
+        animation: float 3s ease-in-out infinite;
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    
+    .click-image[style*="display: block"] {
+        animation: appear 0.5s ease-out forwards, float 3s ease-in-out infinite;
+    }
+    
+    @keyframes appear {
+        0% { opacity: 0; transform: scale(0.9); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .click-area:active .click-image, 
+	.click-area.touch-active .click-image {
+    transform: scale(1.1) !important;
+}
+    
+    .online-counter {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.7);
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-btn {
+        position: fixed;
+        top: 15px;
+        padding: 8px 12px;
+        background: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+        transform: scale(1.05);
+    }
+    
+    .nav-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .back-btn {
+        left: 15px;
+    }
+    
+    .top-btn {
+        left: 100px;
+    }
+    
+    .total-score {
+        font-size: 1.2rem;
+        margin: 10px 0;
+        text-align: center;
+    }
+    
+    .player-score {
+        font-size: 1rem;
+        margin: 5px 0;
+        color: #FFD700;
+    }
+    
+    .top-list {
+        width: 90%;
+        max-width: 400px;
+        margin: 1rem 0;
+        background: rgba(0,0,0,0.3);
+        padding: 15px;
+        border-radius: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .top-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .top-item:last-child {
+        border-bottom: none;
+    }
+	// Обработка touch-событий для мобильных устройств
+document.addEventListener('DOMContentLoaded', function() {
+    function handleTouchStart(e) {
+        // Добавляем класс при касании
+        if(e.target.classList.contains('team-btn') || 
+           e.target.classList.contains('click-area')) {
+            e.target.classList.add('touch-active');
+        }
+    }
+    
+    function handleTouchEnd(e) {
+        // Удаляем класс после касания
+        document.querySelectorAll('.team-btn, .click-area').forEach(el => {
+            el.classList.remove('touch-active');
+        });
+    }
+    
+    // Добавляем обработчики
+    document.addEventListener('touchstart', handleTouchStart, {passive: true});
+    document.addEventListener('touchend', handleTouchEnd, {passive: true});
+    document.addEventListener('touchcancel', handleTouchEnd, {passive: true});
+});
+
+    
