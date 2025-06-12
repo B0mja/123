@@ -33,7 +33,7 @@
         <div style="display: flex; flex-direction: column;">
             <button id="ua-btn" class="team-btn">Украина</button>
             <button id="ru-btn" class="team-btn">Россия</button>
-            <button id="show-top-btn" class="team-btn" style="background: #4CAF50; color: white;">ТОП 10 игроков</button>
+            <button id="show-top-btn" class="team-btn">ТОП 10 игроков</button>
         </div>
         
         <div class="online-counter">Игроков: <span id="online-count">0</span></div>
@@ -59,12 +59,8 @@
         </div>
         
         <div class="click-area">
-            <!-- Изображения для разных стран -->
-            <img id="ua-image" class="click-image" style="display: none;" 
-                 src="img/ура.png">
-            
-            <img id="ru-image" class="click-image" style="display: none;"
-                 src="img/сво.png">
+            <img id="ua-image" class="click-image" style="display: none;" src="img/ура.png">
+            <img id="ru-image" class="click-image" style="display: none;" src="img/сво.png">
         </div>
     </div>
     
@@ -82,16 +78,16 @@
     </div>
 
     <script>
-        // Конфигурация Firebase (замените на свою)
+        // Конфигурация Firebase
         const firebaseConfig = {
-             apiKey: "AIzaSyBPqg_I559iFfQyUk-OEQoqNx-TRJzCSQw",
-  authDomain: "cliker123-695c3.firebaseapp.com",
-  databaseURL: "https://cliker123-695c3-default-rtdb.firebaseio.com",
-  projectId: "cliker123-695c3",
-  storageBucket: "cliker123-695c3.firebasestorage.app",
-  messagingSenderId: "965083592970",
-  appId: "1:965083592970:web:6511988b507565723d22f3",
-  measurementId: "G-3LHXWCGB3E"
+            apiKey: "AIzaSyBPqg_I559iFfQyUk-OEQoqNx-TRJzCSQw",
+            authDomain: "cliker123-695c3.firebaseapp.com",
+            databaseURL: "https://cliker123-695c3-default-rtdb.firebaseio.com",
+            projectId: "cliker123-695c3",
+            storageBucket: "cliker123-695c3.appspot.com",
+            messagingSenderId: "965083592970",
+            appId: "1:965083592970:web:6511988b507565723d22f3",
+            measurementId: "G-3LHXWCGB3E"
         };
 
         // Инициализация Firebase
@@ -134,6 +130,12 @@
         function updateTeamScore() {
             if (!selectedTeam) return;
             
+            // Мгновенная анимация
+            const image = document.getElementById(`${selectedTeam}-image`);
+            image.style.transform = 'scale(1.1)';
+            setTimeout(() => image.style.transform = 'scale(1)', 100);
+            
+            // Отправка данных
             scoresRef.child(selectedTeam).set(firebase.database.ServerValue.increment(1));
             
             playerScore++;
@@ -205,38 +207,26 @@
 
         // Настройка обработчиков нажатия
         function setupButtonPress() {
-            const interactiveElements = document.querySelectorAll('.team-btn, .click-area, .nav-btn');
-            
-            // Обработчики для мыши
-            interactiveElements.forEach(el => {
-                el.addEventListener('mousedown', () => {
-                    el.classList.add('pressed');
-                });
-                
-                el.addEventListener('mouseup', () => {
-                    el.classList.remove('pressed');
-                });
-                
-                el.addEventListener('mouseleave', () => {
-                    el.classList.remove('pressed');
-                });
+            // Обработчики для кнопок
+            const buttons = document.querySelectorAll('.team-btn, .nav-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
+                btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
+                btn.addEventListener('mouseleave', () => btn.classList.remove('pressed'));
+                btn.addEventListener('touchstart', () => btn.classList.add('pressed'), {passive: true});
+                btn.addEventListener('touchend', () => btn.classList.remove('pressed'), {passive: true});
+                btn.addEventListener('touchcancel', () => btn.classList.remove('pressed'), {passive: true});
             });
             
-            // Обработчики для touch-устройств
-            interactiveElements.forEach(el => {
-                el.addEventListener('touchstart', () => {
-                    el.classList.add('pressed');
-                    setTimeout(() => el.classList.remove('pressed'), 300);
-                }, {passive: true});
-                
-                el.addEventListener('touchend', () => {
-                    el.classList.remove('pressed');
-                }, {passive: true});
-                
-                el.addEventListener('touchcancel', () => {
-                    el.classList.remove('pressed');
-                }, {passive: true});
-            });
+            // Обработчики для клик-области (оптимизированные)
+            const clickArea = document.querySelector('.click-area');
+            clickArea.addEventListener('click', updateTeamScore);
+            clickArea.addEventListener('touchstart', function() {
+                this.classList.add('pressed');
+                updateTeamScore();
+            }, {passive: false});
+            clickArea.addEventListener('touchend', () => clickArea.classList.remove('pressed'), {passive: true});
+            clickArea.addEventListener('touchcancel', () => clickArea.classList.remove('pressed'), {passive: true});
         }
 
         // Обработчики событий
@@ -278,14 +268,12 @@
             document.getElementById('top-screen').style.display = 'flex';
         });
 
-        document.querySelector('.click-area').addEventListener('click', updateTeamScore);
-
         // Инициализация игры
         function initGame() {
             setupPresence();
             updatePlayerScore();
             loadTopPlayers();
-            setupButtonPress(); // Добавлено для обработки нажатий
+            setupButtonPress();
             document.getElementById('main-screen').style.display = 'flex';
         }
 
